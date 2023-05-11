@@ -7,12 +7,17 @@ Created on Sat Feb  4 16:47:02 2023
 pickle_dict = {}
 pickle_dict["monthly_correlation_matrix"]=monthly_correlation_matrix
 pickle_dict["threshold_for_low_correlation"]=threshold_for_low_correlation
+pickle_dict["max_size"]=max_size
 pickle_dict["cluster_list"]=cluster_list
 pickle_dict["parameters"]=parameters
 pickle_dict["mcmc_samples"]=mcmc_samples
 pickle_dict["t_circuit"]=t_circuit
 pickle_dict["pr_success_monthly"]=pr_success_monthly
 pickle_dict["current_time"]=current_time
+pickle_dict["hellinger"]=hellinger
+pickle_dict["hellinger_normalized"]=hellinger_normalized
+pickle_dict["hellinger_averaged"]=hellinger_averaged
+pickle_dict["hellinger_for_each_param"]=hellinger_for_each_param
 
 # write to pickle
 with open('/home/samudra/mc1_may9_2023_11am_run.pkl', 'wb') as f:
@@ -39,16 +44,11 @@ current_time=pickle_dict["current_time"]
 
 # data set by month
 data_set_monthly={}
-
-# filename_ref = data_folder+'device_data_12_2021.csv'
-# data_set_monthly[0] = get_data_set(filename_ref)
-
 k=0
 for i in np.arange(1, 13):
     filename_this = data_folder+'device_data_'+str(i)+'_2022.csv'
     data_set_monthly[k] = get_data_set(filename_this, noise_metrics_list_16); k=k+1
     print(filename_this)
-
 for i in np.arange(1, 5):
     filename_this = data_folder+'device_data_'+str(i)+'_2023.csv'
     data_set_monthly[k] = get_data_set(filename_this, noise_metrics_list_16); k=k+1
@@ -59,6 +59,7 @@ monthly_correlation_matrix={}
 for i in range(len( data_set_monthly )):
     monthly_correlation_matrix[i] = get_correlation_matrix(data_set_monthly[i], 0)                
 
+max_size=3
 threshold_for_low_correlation, cluster_list = get_threshold(monthly_correlation_matrix, max_size=3)
 
 #estimate the joint distribution parameters
@@ -83,8 +84,8 @@ for i in range(len( data_set_monthly )):
                                            num_mcmc_samples)
 
 # show why coupulas are important
-plot_copula_graphs(data_set_monthly, mcmc_samples) # why does this take such long time?
-plot_correlation_matrix(monthly_correlation_matrix[15])
+# plot_copula_graphs(data_set_monthly, mcmc_samples) # why does this take such long time?
+# plot_correlation_matrix(monthly_correlation_matrix[15])
 
 ### compute the three kinds of distances ###
 hellinger            = np.zeros(len( data_set_monthly ))*np.nan
@@ -148,5 +149,5 @@ ax.set_xticklabels(['Feb-22','Mar-22','Apr-22','May-22','Jun-22','Jul-22',
                     'Aug-22','Sep-22','Oct-22','Nov-22','Dec-22',
                     'Jan-23','Feb-23','Mar-23','Apr-23'], rotation=45)
 sns.despine()
-plt.ylabel("Ratio of s to s(max)")
+plt.ylabel("100 times the ratio of s to s(max)")
 plt.savefig("s_by_smax.png", bbox_inches = "tight", dpi=300)

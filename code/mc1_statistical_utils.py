@@ -287,6 +287,7 @@ def plot_copula_graphs(data_set_monthly, mcmc_samples):
     plt.savefig('dist_without_copula.png', bbox_inches = "tight", dpi=300)
 
 def get_correlation_matrix(data_set_this, threshold_for_low_correlation = 0):
+    #data_set_this=data_set_monthly[15]
     n_header_list_for_corr = len(noise_metrics_list_16)
     my_corr = data_set_this.dropna().corr()
     for i in range(len(noise_metrics_list_16)):

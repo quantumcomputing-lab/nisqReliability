@@ -24,3 +24,8 @@ This will require your token, password etc.
 Step 6:
 Consult the List of figures and tables and generate what you need
 
+
+# Note on data
+Note 1: The device was commisssioned in Dec 2021. We have skipped uing the data for Dec 2021 as there are many "flatlines" in the dataset which mean daily calibration was not done.
+
+
