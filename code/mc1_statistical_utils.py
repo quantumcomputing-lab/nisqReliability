@@ -268,7 +268,8 @@ def plot_copula_graphs(data_set_monthly, mcmc_samples):
 
     # plot
     plt.close()    
-    h = sns.jointplot(x1*100, x2*100, kind='kde', ylim=(ymin*100, ymax*100), xlim=(xmin*100, xmax*100), stat_func=None);
+    h = sns.jointplot(x1*100, x2*100, kind='kde', ylim=(ymin*100, ymax*100), cbar=True, 
+                      xlim=(xmin*100, xmax*100), stat_func=None);
     h.set_axis_labels("Hadamard gate error (%) for qubit 0", "Hadamard gate error (%) for qubit 3", fontsize=16)
     # h.set_axis_labels("Hadamard gate error for qubit 1", "T2 time for qubit 2\n($\mu$s)", fontsize=16)
     # h.set_axis_labels("Hadamard gate error for qubit 1", "T2 time for qubit 2", fontsize=16)
@@ -281,7 +282,8 @@ def plot_copula_graphs(data_set_monthly, mcmc_samples):
     # x2_nocorr = scipy.stats.gamma.rvs(fit_alpha, fit_loc, fit_scale, size = (10_000, 1))
     
     plt.close()
-    h = sns.jointplot(x1_nocorr*100, x2_nocorr*100, kind='kde', ylim=(ymin*100, ymax*100), xlim=(xmin*100, xmax*100), stat_func=None);
+    h = sns.jointplot(x1_nocorr*100, x2_nocorr*100, kind='kde', cbar=True, 
+                      ylim=(ymin*100, ymax*100), xlim=(xmin*100, xmax*100), stat_func=None);
     h.set_axis_labels("Hadamard gate error (%) for qubit 0", "Hadamard gate error (%) for qubit 3", fontsize=16)
     # h.set_axis_labels("Hadamard gate error for qubit 1", "T2 time for qubit 2\n($\mu$s)", fontsize=16)
     plt.savefig('dist_without_copula.png', bbox_inches = "tight", dpi=300)
@@ -340,16 +342,26 @@ def get_correlation_matrix(data_set_this, threshold_for_low_correlation = 0):
 #     # np.sum( np.abs( my_corr_masked - my_corr) )
 #     return my_corr, my_corr_masked
 
-def plot_correlation_matrix(my_corr):
+for key, my_corr in monthly_correlation_matrix.items():
+    # print(val)
+    plot_correlation_matrix(my_corr, figname = 'correlation_matrix_'+str(key)+'.png')
+
+def plot_correlation_matrix(my_corr, figname = 'correlation_matrix.png'):        
     f, ax = plt.subplots(figsize=(11, 9))
     #cmap = sns.diverging_palette(10, 250, as_cmap=True)
+    x_labels = ['x' + str(i) for i in range(16)]
+    # y_labels = ['x' + str(i) for i in range(16)]
     sns.heatmap(my_corr, 
                 #annot=True, 
                 #cmap=cmap, 
+                xticklabels=x_labels,
+                yticklabels=x_labels,
                 vmin=-1,vmax=1,center=0,cmap="RdBu",
                 square=True, fmt='.02f',
                 linewidth=.5, cbar_kws={"shrink": .5}, ax=ax)
-    plt.savefig('correlation_matrix.png', bbox_inches = "tight", dpi=300)
+    ax.set_xticklabels(ax.get_xticklabels(), fontsize=12)
+    ax.set_yticklabels(ax.get_yticklabels(), fontsize=12)
+    plt.savefig(figname, bbox_inches = "tight", dpi=300)
 
 
 def get_hellinger_using_mcmc(g_params, f_params, f_samples):
@@ -768,9 +780,9 @@ def get_log_gaussian_copula_only( g_params, f_samples):
     return logCopula_clusterK_at_t # vector over mcmc samples
 
 def plot_distance_from_ref_3kinds(hellinger, hellinger_normalized, hellinger_averaged):
-    plt.plot(np.arange(0,len( hellinger)), hellinger, marker='*', linestyle='-.', alpha=0.8, label = 'Hellinger distance')
-    plt.plot(np.arange(0,len( hellinger)), hellinger_normalized, marker='*', linestyle='--', alpha=0.8, label = 'Hellinger distance (normalized)')
-    plt.plot(np.arange(0,len( hellinger)), hellinger_averaged, marker='*', linestyle='-', alpha=0.8, label = 'Hellinger  distance (average)')
+    plt.plot(np.arange(0,len( hellinger)), hellinger, marker='*', linestyle='-.', alpha=0.8, label = 'Hellinger (H)')
+    plt.plot(np.arange(0,len( hellinger)), hellinger_normalized, marker='*', linestyle='--', alpha=0.8, label = 'Hellinger normalized ($H_{normalized}$)')
+    plt.plot(np.arange(0,len( hellinger)), hellinger_averaged, marker='*', linestyle='-', alpha=0.8, label = 'Hellinger  average ($H_{avg}$)')
     plt.legend()
     ticks = np.arange(0, len( data_set_monthly ))
     plt.gca().set_xticks(ticks)

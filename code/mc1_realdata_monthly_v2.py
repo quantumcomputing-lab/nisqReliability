@@ -36,6 +36,10 @@ mcmc_samples=pickle_dict["mcmc_samples"]
 t_circuit=pickle_dict["t_circuit"]
 pr_success_monthly=pickle_dict["pr_success_monthly"]
 current_time=pickle_dict["current_time"]
+hellinger=pickle_dict["hellinger"]
+hellinger_normalized=pickle_dict["hellinger_normalized"]
+hellinger_averaged=pickle_dict["hellinger_averaged"]
+
 
 """
 # data set full
